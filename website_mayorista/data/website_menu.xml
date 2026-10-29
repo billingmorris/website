@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Entrada en el menú principal del sitio. noupdate: se puede renombrar o mover sin que una actualización la revierta. -->
+    <data noupdate="1">
+        <record id="menu_mayorista" model="website.menu">
+            <field name="name">Pedido mayorista</field>
+            <field name="url">/mayorista</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">55</field>
+        </record>
+    </data>
+</odoo>

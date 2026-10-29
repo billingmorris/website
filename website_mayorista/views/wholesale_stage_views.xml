@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_wholesale_stage_tree" model="ir.ui.view">
+        <field name="name">wholesale.order.stage.tree</field>
+        <field name="model">wholesale.order.stage</field>
+        <field name="arch" type="xml">
+            <tree string="Etapas de rastreo">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="notify_customer"/>
+                <field name="send_email"/>
+                <field name="fold" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_wholesale_stage_form" model="ir.ui.view">
+        <field name="name">wholesale.order.stage.form</field>
+        <field name="model">wholesale.order.stage</field>
+        <field name="arch" type="xml">
+            <form string="Etapa de rastreo">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivada" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="fold"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Cliente">
+                            <field name="notify_customer"/>
+                            <field name="send_email"/>
+                            <field name="mail_template_id" attrs="{'invisible': [('send_email', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Mensaje que verá el cliente en el seguimiento…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wholesale_stage" model="ir.actions.act_window">
+        <field name="name">Etapas de rastreo</field>
+        <field name="res_model">wholesale.order.stage</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Cree las etapas que verá el cliente en el seguimiento</p>
+            <p>Por ejemplo: Recibido, En preparación, Despachado, Entregado.</p>
+        </field>
+    </record>
+</odoo>

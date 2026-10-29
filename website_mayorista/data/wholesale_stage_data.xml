@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Etapas iniciales: se pueden renombrar, reordenar, archivar o crear nuevas -->
+    <data noupdate="1">
+        <record id="stage_received" model="wholesale.order.stage">
+            <field name="name">Recibido</field>
+            <field name="sequence">10</field>
+            <field name="description">Recibimos su pedido y lo estamos revisando.</field>
+            <!-- Al enviar el pedido el cliente ya recibe el aviso "Pedido recibido" -->
+            <field name="notify_customer" eval="False"/>
+        </record>
+        <record id="stage_preparing" model="wholesale.order.stage">
+            <field name="name">En preparación</field>
+            <field name="sequence">20</field>
+            <field name="description">Estamos alistando sus productos.</field>
+        </record>
+        <record id="stage_shipped" model="wholesale.order.stage">
+            <field name="name">Despachado</field>
+            <field name="sequence">30</field>
+            <field name="description">Su pedido salió de nuestra bodega.</field>
+            <field name="send_email" eval="True"/>
+        </record>
+        <record id="stage_delivered" model="wholesale.order.stage">
+            <field name="name">Entregado</field>
+            <field name="sequence">40</field>
+            <field name="description">Su pedido fue entregado. Gracias por su compra.</field>
+            <field name="fold" eval="True"/>
+        </record>
+    </data>
+</odoo>

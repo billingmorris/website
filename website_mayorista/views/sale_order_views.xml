@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Formulario de venta: etapa de rastreo, envío y datos de la app -->
+    <record id="view_order_form_mayorista" model="ir.ui.view">
+        <field name="name">sale.order.form.mayorista</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="is_wholesale_app" invisible="1"/>
+                <field name="wholesale_stage_id" options="{'no_create': True}"
+                       attrs="{'invisible': [('is_wholesale_app', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="App Mayorista" name="wholesale_app"
+                      attrs="{'invisible': [('is_wholesale_app', '=', False)]}">
+                    <field name="wholesale_stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                    <group>
+                        <group string="Pedido">
+                            <field name="wholesale_submitted"/>
+                            <field name="wholesale_submitted_date"/>
+                            <field name="wholesale_website_id"/>
+                        </group>
+                        <group string="Envío (visible para el cliente)">
+                            <field name="wholesale_shipping_product_id" options="{'no_create': True}"/>
+                            <field name="wholesale_shipping_cost"
+                                   attrs="{'invisible': [('wholesale_shipping_product_id', '=', False)]}"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Número del pedido en otro color en las listas (según la configuración de la app) -->
+    <record id="view_quotation_tree_mayorista" model="ir.ui.view">
+        <field name="name">sale.order.quotation.tree.mayorista</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="wholesale_list_color" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="decoration-bf">wholesale_list_color</attribute>
+                <attribute name="decoration-info">wholesale_list_color == 'info'</attribute>
+                <attribute name="decoration-success">wholesale_list_color == 'success'</attribute>
+                <attribute name="decoration-warning">wholesale_list_color == 'warning'</attribute>
+                <attribute name="decoration-danger">wholesale_list_color == 'danger'</attribute>
+                <attribute name="decoration-primary">wholesale_list_color == 'primary'</attribute>
+                <attribute name="decoration-muted">wholesale_list_color == 'muted'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="wholesale_stage_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_order_tree_mayorista" model="ir.ui.view">
+        <field name="name">sale.order.tree.mayorista</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="wholesale_list_color" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="decoration-bf">wholesale_list_color</attribute>
+                <attribute name="decoration-info">wholesale_list_color == 'info'</attribute>
+                <attribute name="decoration-success">wholesale_list_color == 'success'</attribute>
+                <attribute name="decoration-warning">wholesale_list_color == 'warning'</attribute>
+                <attribute name="decoration-danger">wholesale_list_color == 'danger'</attribute>
+                <attribute name="decoration-primary">wholesale_list_color == 'primary'</attribute>
+                <attribute name="decoration-muted">wholesale_list_color == 'muted'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="wholesale_stage_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Filtros de búsqueda -->
+    <record id="view_sales_order_filter_mayorista" model="ir.ui.view">
+        <field name="name">sale.order.search.mayorista</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="wholesale_app" string="Pedidos de la App"
+                        domain="[('is_wholesale_app', '=', True), ('wholesale_submitted', '=', True)]"/>
+                <filter name="wholesale_cart" string="Carritos abiertos de la App"
+                        domain="[('is_wholesale_app', '=', True), ('wholesale_submitted', '=', False)]"/>
+                <filter name="group_wholesale_stage" string="Etapa de rastreo"
+                        context="{'group_by': 'wholesale_stage_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Kanban de seguimiento por etapas -->
+    <record id="view_wholesale_order_kanban" model="ir.ui.view">
+        <field name="name">sale.order.kanban.mayorista</field>
+        <field name="model">sale.order</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="wholesale_stage_id" class="o_kanban_small_column"
+                    quick_create="false" sample="1">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="amount_total"/>
+                <field name="currency_id"/>
+                <field name="date_order"/>
+                <field name="state"/>
+                <field name="user_id"/>
+                <field name="wholesale_stage_id"/>
+                <field name="activity_state"/>
+                <progressbar field="activity_state"
+                             colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top mb8">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                </div>
+                                <strong><field name="amount_total" widget="monetary"/></strong>
+                            </div>
+                            <div><field name="partner_id"/></div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="date_order" widget="date"/>
+                                    <field name="activity_ids" widget="kanban_activity"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="state" widget="label_selection"
+                                           options="{'classes': {'draft': 'default', 'sent': 'info', 'sale': 'success', 'done': 'success', 'cancel': 'danger'}}"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_wholesale_orders" model="ir.actions.act_window">
+        <field name="name">Pedidos de la App</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="domain">[('is_wholesale_app', '=', True), ('wholesale_submitted', '=', True)]</field>
+        <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aún no hay pedidos desde la app</p>
+            <p>Los pedidos que envíen los clientes desde /mayorista aparecerán aquí, organizados por etapa.</p>
+        </field>
+    </record>
+    <record id="action_wholesale_orders_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_wholesale_order_kanban"/>
+        <field name="act_window_id" ref="action_wholesale_orders"/>
+    </record>
+    <record id="action_wholesale_orders_tree" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="sale.view_quotation_tree"/>
+        <field name="act_window_id" ref="action_wholesale_orders"/>
+    </record>
+    <record id="action_wholesale_orders_form" model="ir.actions.act_window.view">
+        <field name="sequence">3</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sale.view_order_form"/>
+        <field name="act_window_id" ref="action_wholesale_orders"/>
+    </record>
+
+    <record id="action_wholesale_open_app" model="ir.actions.act_url">
+        <field name="name">Abrir la app</field>
+        <field name="url">/mayorista</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
