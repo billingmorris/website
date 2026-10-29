@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sección "App Mayorista" en Ajustes generales -->
+    <record id="res_config_settings_view_form_mayorista" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.mayorista</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">95</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="App Mayorista" string="App Mayorista"
+                     data-key="website_mayorista">
+                    <h2>App Mayorista</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="wholesale_app_name" string="Nombre de la app"/>
+                                <div class="text-muted">Lo ve el cliente en la barra y bajo el ícono instalado.</div>
+                                <div class="mt8"><field name="wholesale_app_name"/></div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="wholesale_pricelist_id" string="Lista de precios del canal"/>
+                                <div class="text-muted">Vacío: se usa la lista de precios de cada cliente.</div>
+                                <div class="mt8"><field name="wholesale_pricelist_id" options="{'no_create': True}"/></div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="wholesale_order_state" string="Estado del pedido al enviarlo"/>
+                                <div class="mt8"><field name="wholesale_order_state"/></div>
+                                <label for="wholesale_origin" string="Documento origen" class="mt8"/>
+                                <div><field name="wholesale_origin"/></div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="wholesale_shipping_product_id" string="Producto de envío"/>
+                                <div class="text-muted">Su precio de venta es el costo de envío por defecto.</div>
+                                <div class="mt8"><field name="wholesale_shipping_product_id" options="{'no_create': True}"/></div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"><field name="wholesale_send_email"/></div>
+                            <div class="o_setting_right_pane">
+                                <label for="wholesale_send_email" string="Correo de confirmación al cliente"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"><field name="wholesale_notify_backend"/></div>
+                            <div class="o_setting_right_pane">
+                                <label for="wholesale_notify_backend" string="Aviso en el backend por cada pedido"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"><field name="wholesale_show_invoice_status"/></div>
+                            <div class="o_setting_right_pane">
+                                <label for="wholesale_show_invoice_status" string="El cliente ve el estado de facturación"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"><field name="wholesale_chat_enabled"/></div>
+                            <div class="o_setting_right_pane">
+                                <label for="wholesale_chat_enabled" string="Chat con el cliente"/>
+                                <div class="text-muted">Los mensajes llegan al comercial asignado al cliente.</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="wholesale_whatsapp_number" string="WhatsApp"/>
+                                <div class="text-muted">Con indicativo de país, por ejemplo 573001234567.</div>
+                                <div class="mt8"><field name="wholesale_whatsapp_number"/></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt16 mb16">
+                        <button name="action_open_wholesale_config" type="object" icon="fa-arrow-right"
+                                string="Todos los ajustes de la app (logo, fondo, notificaciones, inventario…)"
+                                class="btn-link"/>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_wholesale_settings_general" model="ir.actions.act_window">
+        <field name="name">Ajustes</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'website_mayorista', 'bin_size': False}</field>
+    </record>
+</odoo>

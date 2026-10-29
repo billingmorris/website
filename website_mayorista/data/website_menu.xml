@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Entrada "Pedido mayorista" en el menú principal de cada sitio web.
+         Se ejecuta en cada instalación o actualización y solo crea la entrada
+         en los sitios donde no exista ya un menú hacia /mayorista. -->
+    <function model="website" name="_wholesale_ensure_menu"/>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú principal del backend (ícono "App Mayorista" en la pantalla de aplicaciones).
+         Visible para todos los usuarios internos; las entradas sensibles se restringen abajo. -->
+    <menuitem id="menu_wholesale_root"
+              name="App Mayorista"
+              action="action_wholesale_orders"
+              web_icon="website_mayorista,static/description/icon.png"
+              sequence="45"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_wholesale_orders" name="Pedidos" parent="menu_wholesale_root"
+              action="action_wholesale_orders" sequence="10"/>
+    <menuitem id="menu_wholesale_notifications" name="Notificaciones a clientes" parent="menu_wholesale_root"
+              action="action_wholesale_notification" sequence="20"/>
+    <menuitem id="menu_wholesale_open_app" name="Abrir la app" parent="menu_wholesale_root"
+              action="action_wholesale_open_app" sequence="30"/>
+
+    <!-- Configuración -->
+    <menuitem id="menu_wholesale_config" name="Configuración" parent="menu_wholesale_root"
+              sequence="90" groups="base.group_system,sales_team.group_sale_manager,website.group_website_designer"/>
+    <menuitem id="menu_wholesale_settings" name="Ajustes de la app" parent="menu_wholesale_config"
+              action="action_wholesale_config" sequence="10"
+              groups="base.group_system,website.group_website_designer"/>
+    <menuitem id="menu_wholesale_settings_general" name="Ajustes rápidos" parent="menu_wholesale_config"
+              action="action_wholesale_settings_general" sequence="15"
+              groups="base.group_system"/>
+    <menuitem id="menu_wholesale_stages" name="Etapas de rastreo" parent="menu_wholesale_config"
+              action="action_wholesale_stage" sequence="20"
+              groups="base.group_system,sales_team.group_sale_manager"/>
+</odoo>
