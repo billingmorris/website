@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_wholesale_stage_user,wholesale.order.stage.user,model_wholesale_order_stage,sales_team.group_sale_salesman,1,0,0,0
-access_wholesale_stage_manager,wholesale.order.stage.manager,model_wholesale_order_stage,sales_team.group_sale_manager,1,1,1,1
-access_wholesale_notification_user,wholesale.notification.user,model_wholesale_notification,sales_team.group_sale_salesman,1,1,1,0
-access_wholesale_notification_manager,wholesale.notification.manager,model_wholesale_notification,sales_team.group_sale_manager,1,1,1,1
