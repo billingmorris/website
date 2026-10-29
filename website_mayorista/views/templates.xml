@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================================
+         Tarjeta de producto. La usan la lista, la galería y los destacados;
+         el CSS decide la disposición según el contenedor.
+         Variables: p (dict de _prepare_products), currency
+         ===================================================================== -->
+    <template id="product_card" name="App Mayorista: tarjeta de producto">
+        <article t-attf-class="o_my_card #{'o_my_in_cart' if p['in_cart'] else ''}"
+                 t-att-data-product-id="p['id']">
+            <img class="o_my_card_img" t-att-src="p['image_url']" t-att-alt="p['name']"
+                 loading="lazy" width="64" height="64"/>
+            <div class="o_my_card_body">
+                <h3 class="o_my_card_name" t-att-title="p['name']" t-esc="p['name']"/>
+                <div class="o_my_card_code" t-if="p['code']">Cód. <t t-esc="p['code']"/></div>
+                <div class="o_my_card_meta">
+                    <span class="o_my_card_price" t-esc="p['price']"
+                          t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                    <span t-if="p['stock_state']" t-attf-class="o_my_stock o_my_stock_#{p['stock_state']}">
+                        <t t-if="p['stock_state'] == 'out'">Agotado</t>
+                        <t t-else="">Disp. <t t-esc="p['stock_display']"/></t>
+                    </span>
+                </div>
+            </div>
+            <t t-call="website_mayorista.qty_stepper">
+                <t t-set="qty" t-value="p['qty']"/>
+                <t t-set="max_qty" t-value="p['max_qty']"/>
+            </t>
+        </article>
+    </template>
+
+    <!-- Selector de cantidad (+ / campo / −) -->
+    <template id="qty_stepper" name="App Mayorista: selector de cantidad">
+        <div class="o_my_stepper">
+            <button type="button" class="o_my_qty_btn o_my_qty_minus" data-delta="-1" aria-label="Quitar una unidad">−</button>
+            <input type="number" class="o_my_qty_input" min="0" step="1" inputmode="numeric"
+                   placeholder="0" aria-label="Cantidad" t-att-value="qty" t-att-max="max_qty"/>
+            <button type="button" class="o_my_qty_btn o_my_qty_plus" data-delta="1" aria-label="Agregar una unidad">+</button>
+        </div>
+    </template>
+
+    <!-- Lista de tarjetas: se renderiza en la página y en /mayorista/productos (JSON) -->
+    <template id="product_items" name="App Mayorista: lista de productos">
+        <t t-foreach="products" t-as="p">
+            <t t-call="website_mayorista.product_card"/>
+        </t>
+    </template>
+
+    <!-- Barra inferior fija con el total del pedido -->
+    <template id="cart_bar" name="App Mayorista: barra del pedido">
+        <div t-attf-class="o_my_cartbar #{'' if cart['has_lines'] else 'o_my_cartbar_empty'}">
+            <a href="/mayorista/carrito" class="o_my_cartbar_link">
+                <span class="o_my_cartbar_info">
+                    <i class="fa fa-shopping-basket" role="img" aria-label="Pedido"/>
+                    <span><span class="js_my_lines" t-esc="cart['lines']"/> productos</span>
+                </span>
+                <span class="o_my_cartbar_total js_my_total" t-esc="cart['amount_total']"/>
+                <span class="o_my_cartbar_cta">Revisar pedido</span>
+            </a>
+        </div>
+    </template>
+
+    <!-- =====================================================================
+         Página principal: /mayorista
+         ===================================================================== -->
+    <template id="app_page" name="App Mayorista: catálogo">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Pedido mayorista</t>
+            <div id="wrap">
+                <div class="o_mayorista_app"
+                     t-att-data-search="search"
+                     t-att-data-category="category.id if category else ''"
+                     t-att-data-offset="next_offset">
+
+                    <!-- Buscador + cambio de vista (fijo arriba al hacer scroll) -->
+                    <div class="o_my_topbar">
+                        <form class="o_my_search" action="/mayorista" method="get" role="search">
+                            <input t-if="category" type="hidden" name="category" t-att-value="category.id"/>
+                            <i class="fa fa-search o_my_search_icon" aria-hidden="true"/>
+                            <input type="search" name="search" class="o_my_search_input"
+                                   t-att-value="search" placeholder="Buscar por nombre o código"
+                                   autocomplete="off" enterkeyhint="search" aria-label="Buscar productos"/>
+                        </form>
+                        <div class="o_my_view_toggle" role="group" aria-label="Tipo de vista">
+                            <button type="button" class="o_my_view_btn active" data-view="list"
+                                    aria-label="Vista lista" aria-pressed="true">
+                                <i class="fa fa-list"/>
+                            </button>
+                            <button type="button" class="o_my_view_btn" data-view="gallery"
+                                    aria-label="Vista galería" aria-pressed="false">
+                                <i class="fa fa-th-large"/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Categorías (raíz) y subcategorías -->
+                    <nav class="o_my_categories" aria-label="Categorías">
+                        <a href="/mayorista" t-attf-class="o_my_chip #{'active' if not category else ''}">Todo</a>
+                        <t t-foreach="categories" t-as="c">
+                            <a t-attf-href="/mayorista?category=#{c.id}"
+                               t-attf-class="o_my_chip #{'active' if c == active_root else ''}"
+                               t-esc="c.name"/>
+                        </t>
+                    </nav>
+                    <nav t-if="subcategories" class="o_my_categories o_my_subcategories" aria-label="Subcategorías">
+                        <t t-foreach="subcategories" t-as="c">
+                            <a t-attf-href="/mayorista?category=#{c.id}"
+                               t-attf-class="o_my_chip #{'active' if c == category else ''}"
+                               t-esc="c.name"/>
+                        </t>
+                    </nav>
+
+                    <!-- Destacados: solo en la portada (sin búsqueda ni categoría) -->
+                    <section t-if="featured" class="o_my_featured" aria-label="Productos destacados">
+                        <h2 class="o_my_section_title">Destacados</h2>
+                        <div class="o_my_featured_track">
+                            <t t-foreach="featured" t-as="p">
+                                <t t-call="website_mayorista.product_card"/>
+                            </t>
+                        </div>
+                    </section>
+
+                    <!-- Catálogo -->
+                    <section class="o_my_catalog">
+                        <h2 class="o_my_section_title">
+                            <t t-if="category"><t t-esc="category.name"/>: </t>
+                            <span class="o_my_result_count" t-esc="count_label"/> productos
+                        </h2>
+                        <div class="o_my_products o_my_view_list">
+                            <t t-call="website_mayorista.product_items"/>
+                        </div>
+                        <div t-attf-class="o_my_empty #{'d-none' if count else ''}">
+                            <p>No hay productos que coincidan con la búsqueda.</p>
+                            <a href="/mayorista" class="o_my_btn o_my_btn_ghost">Ver todo el catálogo</a>
+                        </div>
+                        <button type="button" t-attf-class="o_my_btn o_my_btn_ghost o_my_load_more #{'' if has_more else 'd-none'}">
+                            Cargar más productos
+                        </button>
+                    </section>
+
+                    <t t-call="website_mayorista.cart_bar"/>
+                    <div class="o_my_toast" role="status" aria-live="polite"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- =====================================================================
+         Revisión del pedido: /mayorista/carrito
+         ===================================================================== -->
+    <template id="cart_page" name="App Mayorista: pedido">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Mi pedido</t>
+            <div id="wrap">
+                <div class="o_mayorista_app o_my_is_cart">
+                    <div class="o_my_topbar">
+                        <a href="/mayorista" class="o_my_icon_btn" aria-label="Volver al catálogo">
+                            <i class="fa fa-arrow-left"/>
+                        </a>
+                        <h1 class="o_my_page_title">Mi pedido</h1>
+                    </div>
+
+                    <div class="o_my_container">
+                        <div t-if="error" class="alert alert-danger mt-3" role="alert" t-esc="error"/>
+
+                        <t t-if="lines">
+                            <div class="o_my_products o_my_view_list">
+                                <t t-foreach="lines" t-as="line">
+                                    <article class="o_my_card o_my_in_cart" t-att-data-product-id="line.product_id.id">
+                                        <img class="o_my_card_img" t-att-src="website.image_url(line.product_id, 'image_256')"
+                                             t-att-alt="line.product_id.name" loading="lazy" width="64" height="64"/>
+                                        <div class="o_my_card_body">
+                                            <h3 class="o_my_card_name"
+                                                t-esc="line.product_id.with_context(display_default_code=False).display_name"/>
+                                            <div class="o_my_card_code" t-if="line.product_id.default_code">
+                                                Cód. <t t-esc="line.product_id.default_code"/>
+                                            </div>
+                                            <div class="o_my_card_meta">
+                                                <span class="o_my_card_price js_my_line_subtotal" t-esc="line.price_subtotal"
+                                                      t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                                                <span class="o_my_card_unit">
+                                                    c/u <t t-esc="line.price_reduce_taxexcl"
+                                                           t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <t t-call="website_mayorista.qty_stepper">
+                                            <t t-set="qty" t-value="'%d' % line.product_uom_qty"/>
+                                            <t t-set="max_qty" t-value="stock_max.get(line.product_id.id)"/>
+                                        </t>
+                                    </article>
+                                </t>
+                            </div>
+
+                            <dl class="o_my_totals">
+                                <div><dt>Subtotal</dt><dd class="js_my_untaxed" t-esc="cart['amount_untaxed']"/></div>
+                                <div><dt>Impuestos</dt><dd class="js_my_tax" t-esc="cart['amount_tax']"/></div>
+                                <div class="o_my_totals_total"><dt>Total</dt><dd class="js_my_total" t-esc="cart['amount_total']"/></div>
+                            </dl>
+
+                            <form id="o_my_checkout_form" class="o_my_checkout" action="/mayorista/confirmar" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <label for="o_my_ref">Su orden de compra (opcional)</label>
+                                <input type="text" id="o_my_ref" name="client_ref" maxlength="64" class="form-control"/>
+                                <label for="o_my_note">Observaciones para el pedido (opcional)</label>
+                                <textarea id="o_my_note" name="note" rows="2" class="form-control"></textarea>
+                            </form>
+                        </t>
+                        <div t-else="" class="o_my_empty">
+                            <i class="fa fa-shopping-basket fa-3x" aria-hidden="true"/>
+                            <p>Su pedido no tiene productos todavía.</p>
+                            <a href="/mayorista" class="o_my_btn o_my_btn_primary">Ir al catálogo</a>
+                        </div>
+                    </div>
+
+                    <!-- Botón de confirmación fijo abajo (envía el formulario por el atributo form) -->
+                    <div t-if="lines" class="o_my_cartbar">
+                        <button type="submit" form="o_my_checkout_form" class="o_my_cartbar_link o_my_confirm_btn">
+                            <span t-if="config.wholesale_auto_confirm">Confirmar pedido</span>
+                            <span t-else="">Enviar pedido</span>
+                            <span class="o_my_cartbar_total js_my_total" t-esc="cart['amount_total']"/>
+                        </button>
+                    </div>
+                    <div class="o_my_toast" role="status" aria-live="polite"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- =====================================================================
+         Confirmación: /mayorista/pedido/<id>
+         En móvil ocupa toda la pantalla (ver .o_my_confirm en el CSS).
+         ===================================================================== -->
+    <template id="confirmation_page" name="App Mayorista: confirmación">
+        <t t-call="website.layout">
+            <t t-set="additional_title" t-value="'Pedido %s' % order.name"/>
+            <div id="wrap">
+                <section class="o_my_confirm" role="dialog" aria-modal="true" aria-labelledby="o_my_confirm_title">
+                    <div class="o_my_confirm_card">
+                        <div class="o_my_confirm_icon" aria-hidden="true"><i class="fa fa-check"/></div>
+                        <h1 id="o_my_confirm_title" class="o_my_confirm_title">
+                            <t t-if="confirmed">Pedido confirmado</t>
+                            <t t-else="">Pedido enviado</t>
+                        </h1>
+                        <p class="o_my_confirm_lead" t-if="confirmed">
+                            Lo estamos preparando. Recibirá la confirmación por correo.
+                        </p>
+                        <p class="o_my_confirm_lead" t-else="">
+                            Nuestro equipo lo revisará y le confirmará disponibilidad y entrega.
+                        </p>
+
+                        <div class="o_my_confirm_ref_box">
+                            <span class="o_my_confirm_label">Número de pedido</span>
+                            <span class="o_my_confirm_ref" t-esc="order.name"/>
+                        </div>
+
+                        <dl class="o_my_confirm_summary">
+                            <div><dt>Fecha</dt><dd t-esc="order.date_order" t-options="{'widget': 'date'}"/></div>
+                            <div><dt>Productos</dt><dd t-esc="line_count"/></div>
+                            <div><dt>Unidades</dt><dd t-esc="units"/></div>
+                            <div t-if="order.client_order_ref"><dt>Su orden de compra</dt><dd t-esc="order.client_order_ref"/></div>
+                            <div class="o_my_confirm_total">
+                                <dt>Total</dt>
+                                <dd t-esc="order.amount_total" t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                            </div>
+                        </dl>
+
+                        <details class="o_my_confirm_lines">
+                            <summary>Ver detalle del pedido</summary>
+                            <ul>
+                                <li t-foreach="lines" t-as="line">
+                                    <span class="o_my_confirm_qty" t-esc="'%g' % line.product_uom_qty"/>
+                                    <span class="o_my_confirm_name" t-esc="line.product_id.with_context(display_default_code=False).display_name"/>
+                                    <span class="o_my_confirm_amount" t-esc="line.price_subtotal"
+                                          t-options="{'widget': 'monetary', 'display_currency': order.currency_id}"/>
+                                </li>
+                            </ul>
+                        </details>
+
+                        <div class="o_my_confirm_actions">
+                            <a href="/mayorista" class="o_my_btn o_my_btn_primary">Hacer otro pedido</a>
+                            <a t-att-href="order.get_portal_url()" class="o_my_btn o_my_btn_ghost">Ver en mi cuenta</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+</odoo>

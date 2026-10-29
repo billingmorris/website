@@ -1,0 +1,841 @@
+/* ==========================================================================
+   App Mayorista — estilos mobile-first
+   Todo está acotado bajo .o_mayorista_app y .o_my_confirm para no tocar el
+   tema del sitio. El color principal sale de la variable --primary que
+   Bootstrap 4 genera con los colores del tema.
+   ========================================================================== */
+
+.o_mayorista_app,
+.o_my_confirm {
+    --my-primary: var(--primary, #2f5d8a);
+    --my-text: #1d2430;
+    --my-muted: #667085;
+    --my-line: #e3e6eb;
+    --my-surface: #ffffff;
+    --my-bg: #f3f4f6;
+    --my-ok: #1f7a45;
+    --my-low: #a85d00;
+    --my-out: #b42318;
+    --my-radius: 10px;
+    --my-sticky-top: 0px;     /* súbalo si el tema tiene cabecera fija */
+    --my-bar-h: 64px;
+    color: var(--my-text);
+}
+
+.o_mayorista_app {
+    background: var(--my-bg);
+    min-height: 70vh;
+    padding-bottom: calc(var(--my-bar-h) + 20px + env(safe-area-inset-bottom, 0px));
+}
+
+.o_mayorista_app *,
+.o_my_confirm * {
+    box-sizing: border-box;
+}
+
+.o_my_container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+/* --- Barra superior: buscador + vista ----------------------------------- */
+.o_my_topbar {
+    position: sticky;
+    top: var(--my-sticky-top);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--my-surface);
+    border-bottom: 1px solid var(--my-line);
+}
+
+.o_my_page_title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.o_my_search {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+.o_my_search_icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--my-muted);
+    pointer-events: none;
+}
+
+.o_my_search_input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px 0 36px;
+    border: 1px solid var(--my-line);
+    border-radius: 999px;
+    background: var(--my-bg);
+    font-size: 16px;          /* 16px evita el zoom automático de iOS */
+    color: var(--my-text);
+}
+
+.o_my_search_input:focus {
+    outline: none;
+    border-color: var(--my-primary);
+    background: var(--my-surface);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+}
+
+.o_my_icon_btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    color: var(--my-text);
+    text-decoration: none !important;
+}
+
+.o_my_view_toggle {
+    display: flex;
+    flex: 0 0 auto;
+    padding: 2px;
+    border-radius: 9px;
+    background: var(--my-bg);
+}
+
+.o_my_view_btn {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--my-muted);
+}
+
+.o_my_view_btn.active {
+    background: var(--my-surface);
+    color: var(--my-primary);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.1);
+}
+
+/* --- Categorías ---------------------------------------------------------- */
+.o_my_categories {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 10px 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.o_my_categories::-webkit-scrollbar {
+    display: none;
+}
+
+.o_my_chip {
+    flex: 0 0 auto;
+    padding: 6px 12px;
+    border: 1px solid var(--my-line);
+    border-radius: 999px;
+    background: var(--my-surface);
+    color: var(--my-text) !important;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    text-decoration: none !important;
+}
+
+.o_my_chip.active {
+    background: var(--my-primary);
+    border-color: var(--my-primary);
+    color: #fff !important;
+}
+
+.o_my_subcategories {
+    padding-top: 2px;
+}
+
+.o_my_subcategories .o_my_chip {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    background: transparent;
+}
+
+.o_my_subcategories .o_my_chip.active {
+    background: var(--my-text);
+    border-color: var(--my-text);
+}
+
+/* --- Secciones ----------------------------------------------------------- */
+.o_my_section_title {
+    margin: 10px 10px 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--my-muted);
+}
+
+.o_my_catalog {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+.o_my_catalog .o_my_products,
+.o_my_is_cart .o_my_products {
+    padding: 0 10px;
+}
+
+/* --- Tarjeta (común) ----------------------------------------------------- */
+.o_my_card {
+    position: relative;
+    background: var(--my-surface);
+    border: 1px solid var(--my-line);
+    border-radius: var(--my-radius);
+}
+
+/* Producto ya en el pedido: filete del color principal a la izquierda */
+.o_my_card.o_my_in_cart {
+    border-color: var(--my-primary);
+    box-shadow: inset 3px 0 0 var(--my-primary);
+}
+
+.o_my_card_img {
+    display: block;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 7px;
+}
+
+.o_my_card_body {
+    min-width: 0;
+}
+
+.o_my_card_name {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--my-text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.o_my_card_code {
+    margin-top: 1px;
+    font-size: 0.72rem;
+    color: var(--my-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.o_my_card_meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 8px;
+    margin-top: 2px;
+}
+
+.o_my_card_price {
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.o_my_card_unit {
+    font-size: 0.72rem;
+    color: var(--my-muted);
+}
+
+.o_my_stock {
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.o_my_stock_ok { color: var(--my-ok); }
+.o_my_stock_low { color: var(--my-low); }
+.o_my_stock_out { color: var(--my-out); }
+
+/* --- Selector de cantidad ------------------------------------------------ */
+.o_my_stepper {
+    display: inline-flex;
+    align-items: stretch;
+    flex: 0 0 auto;
+    border: 1px solid var(--my-line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--my-surface);
+}
+
+.o_my_qty_btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    background: var(--my-bg);
+    color: var(--my-text);
+    font-size: 1.15rem;
+    line-height: 1;
+    touch-action: manipulation;   /* sin retraso de doble toque */
+    -webkit-tap-highlight-color: transparent;
+}
+
+.o_my_qty_plus {
+    background: var(--my-primary);
+    color: #fff;
+}
+
+.o_my_qty_btn:active {
+    filter: brightness(0.92);
+}
+
+.o_my_qty_input {
+    width: 42px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--my-text);
+    background: var(--my-surface);
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.o_my_qty_input::-webkit-inner-spin-button,
+.o_my_qty_input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.o_my_qty_input:focus {
+    outline: 2px solid var(--my-primary);
+    outline-offset: -2px;
+}
+
+/* --- Vista lista: tarjetas compactas (~90 px, unas 4 por pantalla) ------- */
+.o_my_view_list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.o_my_view_list .o_my_card {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+}
+
+.o_my_view_list .o_my_card_img {
+    width: 64px;
+    height: 64px;
+}
+
+/* --- Vista galería y destacados: tarjeta vertical ----------------------- */
+.o_my_view_gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.o_my_view_gallery .o_my_card,
+.o_my_featured_track .o_my_card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+}
+
+.o_my_view_gallery .o_my_card_img,
+.o_my_featured_track .o_my_card_img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+}
+
+.o_my_view_gallery .o_my_card_body,
+.o_my_featured_track .o_my_card_body {
+    flex: 1;
+}
+
+.o_my_view_gallery .o_my_stepper,
+.o_my_featured_track .o_my_stepper {
+    width: 100%;
+}
+
+.o_my_view_gallery .o_my_qty_input,
+.o_my_featured_track .o_my_qty_input {
+    flex: 1;
+}
+
+.o_my_featured_track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 42%;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 0 10px 6px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.o_my_featured_track::-webkit-scrollbar {
+    display: none;
+}
+
+.o_my_featured_track .o_my_card {
+    scroll-snap-align: start;
+}
+
+/* --- Estados ------------------------------------------------------------- */
+.o_my_loading .o_my_catalog .o_my_products {
+    opacity: 0.5;
+    transition: opacity 0.15s;
+}
+
+.o_my_empty {
+    padding: 40px 16px;
+    text-align: center;
+    color: var(--my-muted);
+}
+
+.o_my_empty .fa {
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.o_my_btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+.o_my_btn_primary {
+    background: var(--my-primary);
+    color: #fff !important;
+}
+
+.o_my_btn_ghost {
+    background: var(--my-surface);
+    border-color: var(--my-line);
+    color: var(--my-text) !important;
+}
+
+.o_my_load_more {
+    display: flex;
+    width: calc(100% - 20px);
+    margin: 12px auto 0;
+}
+
+.o_my_load_more.d-none {
+    display: none;
+}
+
+/* --- Barra inferior del pedido ------------------------------------------ */
+.o_my_cartbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1020;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: var(--my-surface);
+    border-top: 1px solid var(--my-line);
+    box-shadow: 0 -6px 18px rgba(16, 24, 40, 0.06);
+}
+
+.o_my_cartbar_link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    max-width: 720px;
+    height: 48px;
+    margin: 0 auto;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--my-primary);
+    color: #fff !important;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+.o_my_cartbar_info {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.o_my_cartbar_total {
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.o_my_cartbar_cta {
+    font-size: 0.85rem;
+}
+
+.o_my_cartbar_empty .o_my_cartbar_link {
+    background: var(--my-muted);
+}
+
+.o_my_confirm_btn.o_my_busy {
+    opacity: 0.7;
+    cursor: progress;
+}
+
+/* --- Revisión del pedido ------------------------------------------------- */
+.o_my_is_cart .o_my_products {
+    margin-top: 10px;
+    padding: 0;
+}
+
+.o_my_totals {
+    margin: 14px 0 0;
+    padding: 12px 14px;
+    background: var(--my-surface);
+    border: 1px solid var(--my-line);
+    border-radius: var(--my-radius);
+}
+
+.o_my_totals > div {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+}
+
+.o_my_totals dt {
+    font-weight: 400;
+    color: var(--my-muted);
+}
+
+.o_my_totals dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.o_my_totals_total {
+    margin-top: 6px;
+    padding-top: 8px !important;
+    border-top: 1px dashed var(--my-line);
+    font-size: 1.1rem;
+}
+
+.o_my_totals_total dt,
+.o_my_totals_total dd {
+    font-weight: 800;
+    color: var(--my-text);
+}
+
+.o_my_checkout {
+    margin-top: 14px;
+}
+
+.o_my_checkout label {
+    margin: 8px 0 4px;
+    font-size: 0.85rem;
+    color: var(--my-muted);
+}
+
+.o_my_checkout .form-control {
+    font-size: 16px;
+}
+
+/* --- Aviso flotante ------------------------------------------------------ */
+.o_my_toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--my-bar-h) + 24px + env(safe-area-inset-bottom, 0px));
+    z-index: 1030;
+    max-width: calc(100% - 32px);
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: var(--my-text);
+    color: #fff;
+    font-size: 0.875rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 8px);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.o_my_toast_show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* --- Confirmación -------------------------------------------------------- */
+.o_my_confirm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    padding: 32px 16px;
+    background: var(--my-bg);
+}
+
+.o_my_confirm_card {
+    width: 100%;
+    max-width: 460px;
+    padding: 28px 22px 22px;
+    border-radius: 18px;
+    background: var(--my-surface);
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(16, 24, 40, 0.12);
+}
+
+.o_my_confirm_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: #e5f4ea;
+    color: var(--my-ok);
+    font-size: 34px;
+    animation: o_my_pop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+
+.o_my_confirm_title {
+    margin: 0 0 6px;
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.o_my_confirm_lead {
+    margin: 0 auto 18px;
+    max-width: 32ch;
+    color: var(--my-muted);
+}
+
+/* El número de pedido es lo que el cliente va a dictar o copiar: protagonista */
+.o_my_confirm_ref_box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 18px;
+    padding: 14px;
+    border: 2px dashed var(--my-line);
+    border-radius: 12px;
+}
+
+.o_my_confirm_label {
+    font-size: 0.8rem;
+    color: var(--my-muted);
+}
+
+.o_my_confirm_ref {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    user-select: all;
+}
+
+.o_my_confirm_summary {
+    margin: 0 0 14px;
+    text-align: left;
+}
+
+.o_my_confirm_summary > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--my-line);
+}
+
+.o_my_confirm_summary dt {
+    font-weight: 400;
+    color: var(--my-muted);
+}
+
+.o_my_confirm_summary dd {
+    margin: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.o_my_confirm_total {
+    border-bottom: 0 !important;
+    font-size: 1.15rem;
+}
+
+.o_my_confirm_total dt,
+.o_my_confirm_total dd {
+    font-weight: 800;
+    color: var(--my-text);
+}
+
+.o_my_confirm_lines {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.o_my_confirm_lines summary {
+    cursor: pointer;
+    color: var(--my-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.o_my_confirm_lines ul {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    max-height: 40vh;
+    overflow-y: auto;
+}
+
+.o_my_confirm_lines li {
+    display: grid;
+    grid-template-columns: 3.5em minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--my-line);
+    font-size: 0.85rem;
+}
+
+.o_my_confirm_qty {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.o_my_confirm_amount {
+    font-variant-numeric: tabular-nums;
+}
+
+.o_my_confirm_actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+@keyframes o_my_pop {
+    from { transform: scale(0.4); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* Móvil: la confirmación cubre toda la pantalla, por encima de cabecera y pie */
+@media (max-width: 767.98px) {
+    .o_my_confirm {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1050;
+        align-items: flex-start;
+        overflow-y: auto;
+        padding: calc(24px + env(safe-area-inset-top, 0px)) 14px calc(24px + env(safe-area-inset-bottom, 0px));
+        background: var(--my-primary);
+    }
+
+    .o_my_confirm_card {
+        margin: auto 0;
+    }
+}
+
+/* Pantallas muy angostas: un poco más de densidad */
+@media (max-width: 359.98px) {
+    .o_my_view_list .o_my_card {
+        grid-template-columns: 52px minmax(0, 1fr) auto;
+        gap: 8px;
+    }
+
+    .o_my_view_list .o_my_card_img {
+        width: 52px;
+        height: 52px;
+    }
+
+    .o_my_qty_btn { width: 30px; }
+    .o_my_qty_input { width: 36px; }
+}
+
+@media (min-width: 576px) {
+    .o_my_view_gallery {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .o_my_featured_track {
+        grid-auto-columns: 30%;
+    }
+}
+
+@media (min-width: 768px) {
+    .o_my_topbar,
+    .o_my_categories {
+        padding-left: max(10px, calc((100% - 1140px) / 2 + 10px));
+        padding-right: max(10px, calc((100% - 1140px) / 2 + 10px));
+    }
+
+    .o_my_view_gallery {
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    }
+
+    .o_my_featured_track {
+        grid-auto-columns: 200px;
+        max-width: 1140px;
+        margin: 0 auto;
+    }
+
+    .o_my_section_title {
+        max-width: 1120px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .o_my_confirm_actions {
+        flex-direction: row;
+    }
+
+    .o_my_confirm_actions .o_my_btn {
+        flex: 1;
+    }
+}
+
+@media (min-width: 992px) {
+    /* En escritorio la lista se reparte en dos columnas */
+    .o_my_catalog .o_my_view_list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_my_confirm_icon { animation: none; }
+    .o_my_toast { transition: none; }
+}
